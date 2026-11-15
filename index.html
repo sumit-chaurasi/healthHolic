@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>HeartHolic – Connected Care. Independent Living.</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <style>
+      :root {
+        --p: #256d5b;
+        --s: #e7f4ef;
+        --bg: #f8faf9;
+        --sf: #fff;
+        --tx: #24332f;
+        --mu: #5f6e68;
+        --w: #e9a23b;
+        --d: #d9534f;
+        --bd: #dfe8e4;
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --p: #6cc4aa;
+          --s: #1e3a33;
+          --bg: #121917;
+          --sf: #1a2421;
+          --tx: #e8f0ed;
+          --mu: #9fb0a9;
+          --bd: #2c3b36;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--tx);
+        font:
+          18px/1.5 Inter,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          sans-serif;
+      }
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+      .wrap {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 16px;
+      }
+      .card {
+        background: var(--sf);
+        border: 1px solid var(--bd);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 1px 4px #0001;
+        margin: 0 0 14px;
+      }
+      .btn {
+        background: var(--p);
+        color: var(--bg);
+        border: 0;
+        border-radius: 12px;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-weight: 600;
+        min-height: 48px;
+      }
+      .btn.alt {
+        background: var(--s);
+        color: var(--p);
+      }
+      .btn.d {
+        background: var(--d);
+        color: #fff;
+      }
+      .btn.sm {
+        min-height: 40px;
+        padding: 8px 14px;
+        font-size: 16px;
+      }
+      .btn:focus-visible,
+      input:focus-visible,
+      select:focus-visible {
+        outline: 3px solid var(--w);
+        outline-offset: 2px;
+      }
+      .nav {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin: 10px 0;
+      }
+      .tabs .btn {
+        background: var(--sf);
+        color: var(--tx);
+        border: 1px solid var(--bd);
+      }
+      .tabs .btn[aria-current="page"] {
+        background: var(--p);
+        color: var(--bg);
+      }
+      .grid {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+      .big {
+        font-size: 30px;
+        font-weight: 700;
+      }
+      .mu {
+        color: var(--mu);
+      }
+      h1 {
+        font-size: clamp(30px, 6vw, 52px);
+        line-height: 1.1;
+        margin: 0.2em 0;
+      }
+      h2 {
+        margin: 0.3em 0;
+      }
+      .tag {
+        display: inline-block;
+        border-radius: 99px;
+        padding: 2px 12px;
+        font-size: 15px;
+        font-weight: 600;
+        background: var(--s);
+        color: var(--p);
+      }
+      .tag.Missed {
+        background: #d9534f22;
+        color: var(--d);
+      }
+      .tag.Pending,
+      .tag.Postponed,
+      .tag.SIMULATED {
+        background: #e9a23b33;
+        color: #9a6200;
+      }
+      @media (prefers-color-scheme: dark) {
+        .tag.Pending,
+        .tag.Postponed,
+        .tag.SIMULATED {
+          color: var(--w);
+        }
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--bd);
+      }
+      .sc {
+        overflow-x: auto;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid var(--bd);
+        border-radius: 10px;
+        background: var(--bg);
+        color: var(--tx);
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin: 8px 0 4px;
+      }
+      .med {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .bar {
+        background: var(--s);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        font-size: 15px;
+      }
+      .hero {
+        padding: 40px 0;
+      }
+      .warn {
+        border-left: 6px solid var(--w);
+      }
+      .ok {
+        border-left: 6px solid var(--p);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap" id="app"></div>
+    <script>
+      const esc = (s) =>
+        String(s).replace(
+          /[&<>"']/g,
+          (c) =>
+            ({
+              "&": "&amp;",
+              "<": "&lt;",
+              ">": "&gt;",
+              '"': "&quot;",
+              "'": "&#39;",
+            })[c],
+        );
+      const USERS = {
+        elder: ["Asha Verma (demo)", "Elderly"],
+        family: ["Rohan Verma (demo)", "Family"],
+        care: ["Meera Nair (demo)", "Caretaker"],
+        admin: ["Admin (demo)", "Administrator"],
+      };
+      const fmt = (t) => {
+        let [h, m] = t.split(":").map(Number);
+        return (
+          (h % 12 || 12) +
+          ":" +
+          String(m).padStart(2, "0") +
+          (h < 12 ? " AM" : " PM")
+        );
+      };
+      const now = () =>
+        new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      let n = 100;
+      const id = () => ++n;
+      function seed() {
+        return {
+          meds: [
+            {
+              id: 1,
+              name: "Demo Medicine A",
+              dose: "1 tablet",
+              times: ["08:00"],
+              doc: "Dr. Demo Rao",
+              on: 1,
+            },
+            {
+              id: 2,
+              name: "Demo Medicine B",
+              dose: "5 ml",
+              times: ["14:00"],
+              doc: "Dr. Demo Rao",
+              on: 1,
+            },
+            {
+              id: 3,
+              name: "Demo Medicine C",
+              dose: "1 capsule",
+              times: ["20:00"],
+              doc: "Dr. Demo Rao",
+              on: 1,
+            },
+          ],
+          logs: [
+            { id: 1, m: 1, t: "08:00", s: "Taken", by: "Asha Verma (demo)" },
+            { id: 2, m: 2, t: "14:00", s: "Pending" },
+            { id: 3, m: 3, t: "20:00", s: "Pending" },
+          ],
+          hist: { Taken: 19, Skipped: 1, Missed: 2 },
+          appts: [
+            {
+              id: 1,
+              doc: "Dr. Demo Rao",
+              spec: "General Physician",
+              date: "2026-11-18",
+              time: "10:30",
+              place: "Demo Clinic",
+              why: "Routine check-up",
+              st: "Scheduled",
+            },
+            {
+              id: 2,
+              doc: "Dr. Demo Iyer",
+              spec: "Cardiologist",
+              date: "2026-11-25",
+              time: "16:00",
+              place: "Demo Hospital",
+              why: "Follow-up",
+              st: "Scheduled",
+            },
+          ],
+          notifs: [
+            {
+              id: 1,
+              to: "Asha Verma (demo)",
+              txt: "Reminder: Demo Medicine A is due at 8:00 AM",
+              at: "08:00",
+            },
+          ],
+          acts: [
+            {
+              w: "Asha Verma (demo)",
+              x: "confirmed Demo Medicine A (8:00 AM)",
+              at: "08:02",
+            },
+            {
+              w: "Rohan Verma (demo)",
+              x: "scheduled an appointment with Dr. Demo Iyer",
+              at: "Yesterday",
+            },
+          ],
+          routines: [
+            { id: 1, t: "Daily health check-in", done: 0 },
+            { id: 2, t: "Drink water (doctor-approved reminder)", done: 0 },
+          ],
+          mem: [
+            { id: 1, n: "Rohan Verma (demo)", r: "Family", on: 1 },
+            { id: 2, n: "Meera Nair (demo)", r: "Caretaker", on: 1 },
+          ],
+          sus: {},
+          em: 0,
+          code: "",
+        };
+      }
+      let S;
+      try {
+        S = JSON.parse(localStorage.getItem("hh"));
+      } catch (e) {}
+      S = S || seed();
+      let me = null,
+        tab = "dash",
+        view = "home";
+      const save = () => {
+        try {
+          localStorage.setItem("hh", JSON.stringify(S));
+        } catch (e) {}
+      };
+      const name = () => USERS[me][0],
+        canEdit = () => me == "elder" || me == "family",
+        canConf = () => me == "elder" || me == "care";
+      const medOf = (i) => S.meds.find((m) => m.id == i) || { name: "?" };
+      const act = (w, x) => S.acts.unshift({ w, x, at: now() });
+      function setLog(i, s) {
+        const l = S.logs.find((l) => l.id == i);
+        l.s = s;
+        l.by = name();
+        act(
+          name(),
+          (s == "Taken"
+            ? "confirmed "
+            : s == "Skipped"
+              ? "skipped "
+              : "postponed ") +
+            medOf(l.m).name +
+            " (" +
+            fmt(l.t) +
+            ")",
+        );
+        save();
+        render();
+      }
+      function miss(i) {
+        const l = S.logs.find((l) => l.id == i);
+        l.s = "Missed";
+        ["Rohan Verma (demo)", "Meera Nair (demo)"].forEach((u) =>
+          S.notifs.unshift({
+            id: id(),
+            to: u,
+            txt: "Alert: a scheduled dose was not confirmed in time. Sign in for details.",
+            at: now(),
+          }),
+        );
+        act(
+          "System",
+          "marked " +
+            medOf(l.m).name +
+            " as Missed and alerted family and caretaker",
+        );
+        save();
+        render();
+      }
+      function addMed(e) {
+        e.preventDefault();
+        const f = new FormData(e.target),
+          m = {
+            id: id(),
+            name: f.get("n"),
+            dose: f.get("d"),
+            times: [f.get("t")],
+            doc: f.get("p") || "",
+            on: 1,
+          };
+        S.meds.push(m);
+        S.logs.push({ id: id(), m: m.id, t: m.times[0], s: "Pending" });
+        act(name(), "added medication " + m.name);
+        save();
+        render();
+      }
+      function addAppt(e) {
+        e.preventDefault();
+        const f = new FormData(e.target);
+        S.appts.push({
+          id: id(),
+          doc: f.get("doc"),
+          spec: f.get("sp"),
+          date: f.get("dt"),
+          time: f.get("tm"),
+          place: f.get("pl"),
+          why: f.get("wh"),
+          st: "Scheduled",
+        });
+        act(name(), "scheduled an appointment with " + f.get("doc"));
+        save();
+        render();
+      }
+      const logCard = (l) => {
+        const m = medOf(l.m),
+          p = l.s == "Pending" || l.s == "Postponed";
+        return `<div class="card med ${p ? "warn" : "ok"}"><div><div class="big">${fmt(l.t)}</div><div><b>${esc(m.name)}</b> · ${esc(m.dose || "")}</div><span class="tag ${l.s}">${l.s}</span> ${l.by ? `<span class="mu">by ${esc(l.by)}</span>` : ""}</div>
+${p ? `<div class="row">${canConf() ? `<button class="btn" onclick="setLog(${l.id},'Taken')">Mark as Taken</button><button class="btn alt" onclick="setLog(${l.id},'Skipped')">Skip</button><button class="btn alt" onclick="setLog(${l.id},'Postponed')">Remind me later</button>` : '<span class="mu">View only</span>'}<button class="btn alt sm" onclick="miss(${l.id})" title="Demo helper">Demo: grace period elapsed</button></div>` : ""}</div>`;
+      };
+      const nextAppt = () =>
+        S.appts
+          .filter((a) => a.st == "Scheduled")
+          .sort((a, b) => a.date.localeCompare(b.date))[0];
+      const apptCard = (a) =>
+        a
+          ? `<div class="card"><span class="tag">Next appointment</span><div class="big">${esc(a.date)} · ${fmt(a.time)}</div><div><b>${esc(a.doc)}</b>, ${esc(a.spec)}</div><div class="mu">${esc(a.place)} — ${esc(a.why)}</div></div>`
+          : '<div class="card mu">No upcoming appointments.</div>';
+      function adh() {
+        const c = { ...S.hist };
+        S.logs.forEach((l) => {
+          if (c[l.s] !== undefined) c[l.s]++;
+        });
+        const t = c.Taken + c.Skipped + c.Missed;
+        return t ? Math.round((100 * c.Taken) / t) : 100;
+      }
+      function elderDash() {
+        return `<h2>Good day, Asha</h2><h2 class="mu" style="font-size:20px">Today’s medicines</h2>${S.logs
+          .slice()
+          .sort((a, b) => a.t.localeCompare(b.t))
+          .map(logCard)
+          .join("")}${apptCard(nextAppt())}
+<div class="card"><h2>My routines</h2>${S.routines.map((r) => `<label style="font-weight:400"><input type="checkbox" style="width:24px;height:24px;display:inline-block;vertical-align:middle" ${r.done ? "checked" : ""} onchange="S.routines.find(x=>x.id==${r.id}).done=this.checked?1:0;act(name(),'updated routine: ${esc(r.t)}');save();render()"> ${esc(r.t)}</label>`).join("")}</div>
+<div class="card" style="border-color:var(--d)"><h2>Need help?</h2>${S.em ? `<p>This will alert your emergency contacts. <b>It does not replace emergency services — call your local emergency number if in danger.</b></p><div class="row"><button class="btn d" onclick="S.em=0;S.notifs.unshift({id:id(),to:'Rohan Verma (demo, emergency contact)',txt:'Emergency assistance requested by Asha. Please call her now.',at:now()});act(name(),'requested emergency assistance');save();render()">Yes, alert my contacts</button><button class="btn alt" onclick="S.em=0;render()">Cancel</button></div>` : `<button class="btn d" onclick="S.em=1;render()">Emergency assistance</button>`}</div>`;
+      }
+      function careDash() {
+        const p = S.logs.filter((l) => l.s == "Pending").length;
+        return `<div class="grid"><div class="card"><div class="mu">Adherence (demo data)</div><div class="big">${adh()}%</div></div><div class="card"><div class="mu">Pending today</div><div class="big">${p}</div></div><div class="card"><div class="mu">Role</div><div class="big" style="font-size:22px">${USERS[me][1]}</div><div class="mu">${canConf() ? "Can confirm doses" : "View & edit only"}</div></div></div>
+<div class="card sc"><h2>Today’s medications</h2><table><tr><th>Time</th><th>Medicine</th><th>Status</th><th></th></tr>${S.logs
+          .slice()
+          .sort((a, b) => a.t.localeCompare(b.t))
+          .map(
+            (l) =>
+              `<tr><td>${fmt(l.t)}</td><td>${esc(medOf(l.m).name)}</td><td><span class="tag ${l.s}">${l.s}</span></td><td>${l.s == "Pending" || l.s == "Postponed" ? `${canConf() ? `<button class="btn sm" onclick="setLog(${l.id},'Taken')">Confirm</button> ` : ""}<button class="btn alt sm" onclick="miss(${l.id})">Demo: mark missed</button>` : ""}</td></tr>`,
+          )
+          .join(
+            "",
+          )}</table></div>${apptCard(nextAppt())}<div class="card"><h2>Recent activity</h2>${tl(4)}</div>`;
+      }
+      const tl = (k) =>
+        S.acts
+          .slice(0, k || 99)
+          .map(
+            (a) =>
+              `<p style="margin:6px 0"><b>${esc(a.w)}</b> ${esc(a.x)} <span class="mu">· ${esc(a.at)}</span></p>`,
+          )
+          .join("");
+      function meds() {
+        return `<div class="card sc"><h2>Medications</h2><table><tr><th>Name</th><th>Dosage</th><th>Times</th><th>Status</th><th></th></tr>${S.meds.map((m) => `<tr><td>${esc(m.name)}</td><td>${esc(m.dose)}</td><td>${m.times.map(fmt).join(", ")}</td><td><span class="tag ${m.on ? "" : "Missed"}">${m.on ? "Active" : "Discontinued"}</span></td><td>${canEdit() && m.on ? `<button class="btn alt sm" onclick="S.meds.find(x=>x.id==${m.id}).on=0;act(name(),'discontinued ${esc(m.name)} (history kept)');save();render()">Discontinue</button>` : ""}</td></tr>`).join("")}</table></div>
+${canEdit() ? `<form class="card" onsubmit="addMed(event)"><h2>Add medication</h2><label>Medicine name<input name="n" required maxlength="80"></label><label>Dosage<input name="d" required maxlength="40" placeholder="e.g. 1 tablet"></label><label>Time<input type="time" name="t" required></label><label>Prescribing doctor<input name="p" maxlength="60"></label><p class="mu">HeartHolic never recommends or changes doses — enter what your doctor prescribed.</p><button class="btn">Save medication</button></form>` : '<p class="mu">You don’t have permission to edit medications.</p>'}
+<div class="card sc"><h2>History</h2><table><tr><th>Time</th><th>Medicine</th><th>Status</th><th>By</th></tr>${S.logs.map((l) => `<tr><td>${fmt(l.t)}</td><td>${esc(medOf(l.m).name)}</td><td><span class="tag ${l.s}">${l.s}</span></td><td>${esc(l.by || "—")}</td></tr>`).join("")}</table></div>`;
+      }
+      function appts() {
+        return `${S.appts.map((a) => `<div class="card med"><div><b>${esc(a.doc)}</b> · ${esc(a.spec)}<div>${esc(a.date)} at ${fmt(a.time)} — ${esc(a.place)}</div><div class="mu">${esc(a.why)}</div></div><div><span class="tag ${a.st == "Cancelled" ? "Missed" : ""}">${a.st}</span> ${canEdit() && a.st == "Scheduled" ? `<button class="btn alt sm" onclick="S.appts.find(x=>x.id==${a.id}).st='Cancelled';act(name(),'cancelled appointment with ${esc(a.doc)}');save();render()">Cancel</button>` : ""}</div></div>`).join("")}
+${canEdit() ? `<form class="card" onsubmit="addAppt(event)"><h2>Add appointment</h2><label>Doctor<input name="doc" required></label><label>Specialization<input name="sp"></label><label>Date<input type="date" name="dt" required></label><label>Time<input type="time" name="tm" required></label><label>Hospital / clinic<input name="pl"></label><label>Purpose<input name="wh"></label><button class="btn">Save appointment</button></form>` : ""}`;
+      }
+      function notifs() {
+        return `<div class="card ok"><b>Email mode: simulated.</b> No SMTP is configured, so nothing below was actually emailed. With SMTP set on the real backend, delivered emails are labelled SENT.</div>${S.notifs.map((x) => `<div class="card"><span class="tag SIMULATED">SIMULATED</span> <b>to ${esc(x.to)}</b> <span class="mu">· ${esc(x.at)}</span><div>${esc(x.txt)}</div></div>`).join("")}`;
+      }
+      function people() {
+        return `<div class="card"><h2>Family & caretakers</h2>${S.mem.map((m) => `<div class="med" style="margin:8px 0"><span><b>${esc(m.n)}</b> · ${m.r}</span><button class="btn alt sm" onclick="S.mem.find(x=>x.id==${m.id}).on^=1;act(name(),'${"changed access for " + esc(m.n)}');save();render()">${m.on ? "Revoke access" : "Restore access"}</button></div>`).join("")}
+<button class="btn" onclick="S.code=Array.from(crypto.getRandomValues(new Uint8Array(5)),b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();render()">Invite someone</button>${S.code ? `<p>Single-use code (expires in 72 h): <b style="font-size:26px;letter-spacing:3px">${S.code}</b></p>` : ""}</div>
+<div class="card"><h2>Emergency contacts</h2><p><b>Rohan Verma (demo)</b> · Son · +91 00000 00000 <span class="tag">Primary</span></p></div>`;
+      }
+      function admin() {
+        const c = {};
+        S.notifs.forEach((x) => (c.S = (c.S || 0) + 1));
+        return `<div class="grid"><div class="card"><div class="mu">Accounts</div><div class="big">4</div></div><div class="card"><div class="mu">Notifications (simulated)</div><div class="big">${S.notifs.length}</div></div></div>
+<div class="card sc"><h2>Accounts</h2><table><tr><th>Name</th><th>Role</th><th></th></tr>${Object.entries(
+          USERS,
+        )
+          .map(
+            ([k, u]) =>
+              `<tr><td>${u[0]}</td><td>${u[1]}</td><td>${k == "admin" ? "" : `<button class="btn alt sm" onclick="S.sus.${k}=!S.sus.${k};save();render()">${S.sus[k] ? "Reactivate" : "Suspend"}</button>`}</td></tr>`,
+          )
+          .join(
+            "",
+          )}</table></div><div class="card ok">Administrators cannot view medications, appointments or any private medical data. That is enforced on the server in the real backend.</div>`;
+      }
+      function dash() {
+        return me == "elder"
+          ? elderDash()
+          : me == "admin"
+            ? admin()
+            : careDash();
+      }
+      function landing() {
+        return `<div class="nav"><b style="font-size:24px;color:var(--p)">♥ HeartHolic</b><div class="row"><button class="btn alt" onclick="view='login';render()">Log in</button><button class="btn" onclick="view='login';render()">Get Started</button></div></div>
+<div class="hero"><h1>Healthcare made simpler. Families connected.</h1><p class="mu" style="font-size:22px;max-width:640px">Manage medications, appointments, and daily healthcare routines while keeping the people who care informed.</p><div class="row"><button class="btn" onclick="view='login';render()">Get Started</button><a class="btn alt" style="text-decoration:none;display:inline-flex;align-items:center" href="#features">Explore Features</a></div><p class="mu">Connected Care. Independent Living.</p></div>
+<div class="grid" id="features">${[
+          [
+            "Medication reminders",
+            "Large, clear cards. Nothing is ever marked taken automatically.",
+          ],
+          ["Appointments", "Next visit shown first, with history."],
+          [
+            "Family & caretakers",
+            "Invite by single-use code; the elder approves and controls access.",
+          ],
+          ["Alerts", "Family is told when a dose isn’t confirmed in time."],
+        ]
+          .map(
+            (f) =>
+              `<div class="card"><h2>${f[0]}</h2><p class="mu">${f[1]}</p></div>`,
+          )
+          .join("")}</div>
+<div class="grid"><div class="card"><h2>How it works</h2><p>1. Add medicines and times. 2. Get reminders. 3. Confirm each dose. 4. Family stays informed.</p></div><div class="card"><h2>Privacy & security</h2><p>Profile-level permissions, hashed invitation codes, audit logs, and no medical details in emails.</p></div></div>
+<p class="mu">HeartHolic supports routines; it does not give medical advice and does not replace emergency services.</p>`;
+      }
+      function login() {
+        return `<div class="card" style="max-width:520px;margin:30px auto"><h2>Choose a demo account</h2><p class="mu">Fictional accounts for the presentation.</p>${Object.entries(
+          USERS,
+        )
+          .map(
+            ([k, u]) =>
+              `<p><button class="btn ${S.sus[k] ? "alt" : ""}" style="width:100%" ${S.sus[k] ? "disabled" : ""} onclick="me='${k}';tab='dash';view='app';render()">${u[1]} — ${u[0]}${S.sus[k] ? " (suspended)" : ""}</button></p>`,
+          )
+          .join(
+            "",
+          )}<button class="btn alt sm" onclick="view='home';render()">Back</button></div>`;
+      }
+      function app() {
+        const T =
+          me == "elder"
+            ? [
+                ["dash", "Today"],
+                ["meds", "Medicines"],
+                ["appts", "Appointments"],
+                ["people", "People"],
+                ["notifs", "Notifications"],
+              ]
+            : me == "admin"
+              ? [["dash", "Overview"]]
+              : [
+                  ["dash", "Dashboard"],
+                  ["meds", "Medications"],
+                  ["appts", "Appointments"],
+                  ["notifs", "Notifications"],
+                  ["activity", "Activity"],
+                ];
+        const B = {
+          dash,
+          meds,
+          appts,
+          notifs,
+          people,
+          activity: () =>
+            `<div class="card"><h2>Shared activity timeline</h2>${tl()}</div>`,
+        };
+        return `<div class="bar">Demo mode · signed in as <b>${esc(name())}</b> · switch: ${Object.entries(
+          USERS,
+        )
+          .map(
+            ([k, u]) =>
+              `<button class="btn alt sm" ${k == me ? "disabled" : ""} onclick="me='${k}';tab='dash';render()">${u[1]}</button>`,
+          )
+          .join(
+            " ",
+          )} <button class="btn sm" onclick="view='home';me=null;render()">Log out</button> <button class="btn alt sm" onclick="localStorage.removeItem('hh');S=seed();render()">Reset demo</button></div>
+<div class="nav"><b style="font-size:22px;color:var(--p)">♥ HeartHolic</b></div><div class="tabs" role="navigation" aria-label="Main">${T.map((t) => `<button class="btn" ${t[0] == tab ? 'aria-current="page"' : ""} onclick="tab='${t[0]}';render()">${t[1]}</button>`).join("")}</div><main>${B[tab]()}</main>`;
+      }
+      function render() {
+        $a.innerHTML =
+          view == "home" ? landing() : view == "login" ? login() : app();
+        window.scrollTo(0, 0);
+      }
+      const $a = document.getElementById("app");
+      render();
+    </script>
+  </body>
+</html>
